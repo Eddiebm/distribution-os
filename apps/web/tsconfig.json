@@ -1,0 +1,8 @@
+{
+  "extends": "@dist-os/tsconfig/nextjs",
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./*"]
+    }
+  }
+}

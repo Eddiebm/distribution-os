@@ -1,0 +1,13 @@
+{
+  "name": "@dist-os/platform",
+  "version": "0.1.0",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "main": "./src/index.ts",
+  "devDependencies": {
+    "@dist-os/tsconfig": "workspace:*",
+    "typescript": "^5"
+  }
+}
