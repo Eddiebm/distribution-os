@@ -115,7 +115,7 @@ export default function QueuePage() {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 10 }}>
               {(Object.keys(PLATFORM_META) as string[]).map(platform => {
                 const meta = PLATFORM_META[platform]
-                const conn = (status as Record<string, ConnStatus>)[platform]
+                const conn = (status as unknown as Record<string, ConnStatus>)[platform]
                 return (
                   <div key={platform} style={{ background: conn?.connected ? `${meta.color}18` : 'rgba(255,255,255,.03)', border: `0.5px solid ${conn?.connected ? meta.color + '40' : dimBorder}`, borderRadius: 10, padding: '12px 14px' }}>
                     <div style={{ fontSize: 12, fontWeight: 700, marginBottom: conn?.connected ? 4 : 10, color: conn?.connected ? meta.color : '#fff' }}>{meta.label}</div>

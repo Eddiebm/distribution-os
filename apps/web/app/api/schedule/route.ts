@@ -50,7 +50,8 @@ export async function POST(req: NextRequest) {
 
   if (items.length === 0) return Response.json({ error: 'No content to schedule' }, { status: 400 })
 
-  await r.zadd(queueKey, ...items.map(i => ({ score: i.score, member: i.member })))
+  const scoredItems = items.map(i => ({ score: i.score, member: i.member }))
+  await r.zadd(queueKey, scoredItems[0], ...scoredItems.slice(1))
 
   return Response.json({ ok: true, count: items.length })
 }

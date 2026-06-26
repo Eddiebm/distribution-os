@@ -1,7 +1,7 @@
 export const runtime = 'edge'
 import { NextRequest } from 'next/server'
 import { redis } from '@/lib/redis'
-import { connKey, stateKey, type LinkedInConn } from '@dist-os/platform'
+import { connKey, stateKey, type LinkedInConn } from '@/lib/platform'
 
 const TTL = 60 * 60 * 24 * 100
 

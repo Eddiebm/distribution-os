@@ -2,7 +2,7 @@ export const runtime = 'edge'
 import { NextRequest } from 'next/server'
 import { Resend } from 'resend'
 import { redis } from '@/lib/redis'
-import { connKey, type Platform, type BlueskyConn, type TwitterConn, type LinkedInConn, type ThreadsConn, postBluesky, postTwitter, postLinkedIn, postThreads } from '@dist-os/platform'
+import { connKey, type Platform, type BlueskyConn, type TwitterConn, type LinkedInConn, type ThreadsConn, postBluesky, postTwitter, postLinkedIn, postThreads } from '@/lib/platform'
 
 export async function GET(req: NextRequest) {
   const secret = process.env.CRON_SECRET

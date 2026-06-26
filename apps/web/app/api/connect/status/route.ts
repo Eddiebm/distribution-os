@@ -1,7 +1,7 @@
 export const runtime = 'edge'
 import { NextRequest } from 'next/server'
 import { redis } from '@/lib/redis'
-import { PLATFORMS, type Platform, connKey } from '@dist-os/platform'
+import { PLATFORMS, type Platform, connKey } from '@/lib/platform'
 
 export async function GET(req: NextRequest) {
   const email = req.nextUrl.searchParams.get('email')
