@@ -11,7 +11,6 @@ export async function GET(req: NextRequest) {
   }
 
   const r = redis()
-  const resend = new Resend(process.env.RESEND_API_KEY)
   const fromEmail = process.env.RESEND_FROM ?? 'noreply@distributionos.com'
   const now = Date.now()
 
@@ -85,6 +84,7 @@ export async function GET(req: NextRequest) {
       } else {
         // Send manual CTA email
         const platformLabel = platform.charAt(0).toUpperCase() + platform.slice(1)
+        const resend = new Resend(process.env.RESEND_API_KEY)
         await resend.emails.send({
           from: fromEmail,
           to: email,
