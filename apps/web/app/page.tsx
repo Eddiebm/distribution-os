@@ -13,9 +13,9 @@ const PLATFORMS = [
 ]
 
 const STEPS = [
-  { n: '01', title: 'Paste your idea', body: 'One sentence, a product description, or a rough draft. DistributionOS figures out the angle.' },
-  { n: '02', title: 'Get your full distribution system', body: '20 hooks, TikTok scripts, captions, carousels, posts, newsletters — generated in under 30 seconds.' },
-  { n: '03', title: 'Connect and auto-post', body: 'Link your accounts once. We schedule and post your content across all platforms automatically.' },
+  { n: '01', title: 'Type any idea', body: "No videos, tweets, or existing content needed. A sentence is enough — a product description, a lesson learned, or a half-formed thought." },
+  { n: '02', title: 'Get a 20-day campaign', body: "Hooks, TikTok scripts, carousels, newsletters — built for each platform's format, scheduled across 20 days automatically." },
+  { n: '03', title: 'Connect and auto-post', body: 'Link your accounts once. DistributionOS posts for you on the right platform at the right time, every day.' },
 ]
 
 const WHAT_YOU_GET = [
@@ -24,7 +24,7 @@ const WHAT_YOU_GET = [
   'Instagram carousels + captions + hashtags',
   'Threads, Bluesky, Reddit, Newsletter, Indie Hackers',
   'Auto-post to connected accounts',
-  '20-day scheduled delivery by email',
+  '20-day campaign calendar — built automatically',
 ]
 
 export default function LandingPage() {
@@ -36,24 +36,27 @@ export default function LandingPage() {
           Distribution<span style={{ color: '#7C3AED' }}>OS</span>
         </span>
         <Link href="/generate" style={{ background: '#7C3AED', color: '#fff', textDecoration: 'none', padding: '9px 20px', borderRadius: 8, fontSize: 14, fontWeight: 600 }}>
-          Get started →
+          Build your campaign →
         </Link>
       </nav>
 
       {/* Hero */}
       <section style={{ maxWidth: 760, margin: '0 auto', padding: '100px 24px 80px', textAlign: 'center' }}>
         <div style={{ display: 'inline-block', background: 'rgba(124,58,237,.15)', border: '0.5px solid rgba(124,58,237,.3)', borderRadius: 999, padding: '5px 14px', fontSize: 12, color: '#A78BFA', marginBottom: 28, fontWeight: 500 }}>
-          9 platforms. One generation.
+          No existing content required
         </div>
         <h1 style={{ fontSize: 'clamp(42px, 8vw, 72px)', fontWeight: 900, lineHeight: 1.05, letterSpacing: '-2.5px', margin: '0 0 24px' }}>
-          One idea.<br />
-          <span style={{ color: '#7C3AED' }}>Every platform.</span>
+          From nothing.<br />
+          <span style={{ color: '#7C3AED' }}>To everywhere.</span>
         </h1>
-        <p style={{ fontSize: 20, color: 'rgba(255,255,255,.55)', maxWidth: 520, margin: '0 auto 44px', lineHeight: 1.6 }}>
-          Generate a complete distribution system — hooks, videos, captions, posts — for every platform. Auto-post to your connected accounts.
+        <p style={{ fontSize: 20, color: 'rgba(255,255,255,.55)', maxWidth: 540, margin: '0 auto 14px', lineHeight: 1.6 }}>
+          Paste any idea — get a complete 20-day content campaign across 9 platforms. Auto-posted to your connected accounts.
+        </p>
+        <p style={{ fontSize: 14, color: 'rgba(255,255,255,.28)', maxWidth: 480, margin: '0 auto 40px', lineHeight: 1.6 }}>
+          Most tools need you to already have content to repurpose. DistributionOS starts from scratch.
         </p>
         <Link href="/generate" style={{ display: 'inline-block', background: '#7C3AED', color: '#fff', textDecoration: 'none', padding: '16px 36px', borderRadius: 10, fontSize: 17, fontWeight: 700, letterSpacing: '-0.3px' }}>
-          Build your distribution system →
+          Build your first campaign →
         </Link>
         <p style={{ fontSize: 12, color: 'rgba(255,255,255,.2)', marginTop: 12 }}>Free to try · No account required</p>
       </section>
@@ -94,7 +97,7 @@ export default function LandingPage() {
         </div>
         <div style={{ marginTop: 48 }}>
           <Link href="/generate" style={{ display: 'inline-block', background: '#7C3AED', color: '#fff', textDecoration: 'none', padding: '14px 32px', borderRadius: 10, fontSize: 16, fontWeight: 700 }}>
-            Start distributing →
+            Build your first campaign →
           </Link>
         </div>
       </section>
@@ -102,7 +105,7 @@ export default function LandingPage() {
       {/* Footer */}
       <footer style={{ borderTop: '0.5px solid rgba(255,255,255,.06)', padding: '24px 32px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
         <span style={{ fontSize: 14, fontWeight: 700 }}>Distribution<span style={{ color: '#7C3AED' }}>OS</span></span>
-        <span style={{ fontSize: 12, color: 'rgba(255,255,255,.2)' }}>One idea. Every platform.</span>
+        <span style={{ fontSize: 12, color: 'rgba(255,255,255,.2)' }}>Zero to campaign. No existing content required.</span>
       </footer>
     </main>
   )

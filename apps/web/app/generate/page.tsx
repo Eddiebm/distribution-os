@@ -32,6 +32,20 @@ interface ParsedSection {
   indieHackers: IHPost
 }
 
+type CalendarChipProps = { icon: string; color: string; text: string }
+function CalendarChip({ icon, color, text }: CalendarChipProps) {
+  const [copied, setCopied] = useState(false)
+  return (
+    <button
+      onClick={async () => { await navigator.clipboard.writeText(text); setCopied(true); setTimeout(() => setCopied(false), 1500) }}
+      title={text}
+      style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: copied ? 'rgba(124,58,237,.15)' : 'rgba(255,255,255,.04)', border: `0.5px solid ${copied ? 'rgba(124,58,237,.35)' : 'rgba(255,255,255,.09)'}`, borderRadius: 5, padding: '4px 8px', cursor: 'pointer', fontFamily: 'inherit', maxWidth: 220 }}>
+      <span style={{ fontSize: 10, color, flexShrink: 0 }}>{icon}</span>
+      <span style={{ fontSize: 11, color: copied ? '#A78BFA' : 'rgba(255,255,255,.55)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 180 }}>{copied ? '✓ Copied' : (text.length > 55 ? text.slice(0, 55) + '…' : text)}</span>
+    </button>
+  )
+}
+
 function extractField(text: string, field: string, nextFields: string[] = []): string {
   const fieldPattern = new RegExp(`${field}:\\s*([\\s\\S]*?)(?=${nextFields.map(f => `${f}:`).join('|')}|$)`, 'i')
   return text.match(fieldPattern)?.[1]?.trim() || ''
@@ -91,7 +105,18 @@ function parseOutput(raw: string): ParsedSection {
   }
 }
 
-const TABS = ['Overview', 'Twitter/X', 'LinkedIn', 'TikTok', 'Instagram', 'Threads', 'Bluesky', 'Reddit', 'Newsletter', 'IH'] as const
+const IDEA_STARTERS = [
+  'An AI tool that helps indie hackers validate startup ideas in 24 hours',
+  'A no-code platform for building mobile apps without writing any code',
+  'A newsletter that curates the top 5 AI tools every Friday',
+  'A SaaS that auto-generates cold email sequences from a LinkedIn profile',
+  'A community for bootstrapped founders to share revenue milestones publicly',
+  'A browser extension that summarizes any webpage in 10 seconds',
+]
+
+const TIKTOK_DAYS = [1, 7, 14]
+
+const TABS = ['Campaign', 'Twitter/X', 'LinkedIn', 'TikTok', 'Instagram', 'Threads', 'Bluesky', 'Reddit', 'Newsletter', 'IH'] as const
 type Tab = typeof TABS[number]
 
 const purple = '#7C3AED'
@@ -106,7 +131,7 @@ export default function GeneratePage() {
   const [raw, setRaw] = useState('')
   const [parsed, setParsed] = useState<ParsedSection | null>(null)
   const [loading, setLoading] = useState(false)
-  const [activeTab, setActiveTab] = useState<Tab>('Overview')
+  const [activeTab, setActiveTab] = useState<Tab>('Campaign')
   const [scheduleState, setScheduleState] = useState<'idle' | 'scheduling' | 'done'>('idle')
   const [videoStates, setVideoStates] = useState<Record<number, { status: 'idle' | 'generating' | 'done' | 'error'; renderId?: string; url?: string; error?: string }>>({})
   const abortRef = useRef<AbortController | null>(null)
@@ -132,7 +157,7 @@ export default function GeneratePage() {
     if (!idea.trim()) return
     abortRef.current?.abort()
     abortRef.current = new AbortController()
-    setLoading(true); setRaw(''); setParsed(null); setActiveTab('Overview')
+    setLoading(true); setRaw(''); setParsed(null); setActiveTab('Campaign')
 
     try {
       const res = await fetch('/api/generate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ idea: idea.trim() }), signal: abortRef.current.signal })
@@ -196,8 +221,8 @@ export default function GeneratePage() {
 
       {/* Input */}
       <div style={{ marginBottom: 32 }}>
-        <h1 style={{ fontSize: 28, fontWeight: 800, letterSpacing: '-1px', margin: '0 0 6px' }}>Build your distribution system</h1>
-        <p style={{ fontSize: 14, color: dim, margin: '0 0 20px' }}>One idea → hooks, scripts, captions, videos for every platform</p>
+        <h1 style={{ fontSize: 28, fontWeight: 800, letterSpacing: '-1px', margin: '0 0 6px' }}>Build your 20-day campaign</h1>
+        <p style={{ fontSize: 14, color: dim, margin: '0 0 20px' }}>No existing content needed — paste any idea and get a full campaign across 9 platforms</p>
         <textarea
           value={idea}
           onChange={e => setIdea(e.target.value)}
@@ -206,9 +231,20 @@ export default function GeneratePage() {
           rows={3}
           style={{ width: '100%', background: 'rgba(255,255,255,.04)', border: `0.5px solid rgba(255,255,255,.14)`, borderRadius: 10, padding: '14px 16px', fontSize: 15, color: '#fff', fontFamily: 'inherit', resize: 'vertical', outline: 'none' }}
         />
+        {!idea && (
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 10 }}>
+            <span style={{ fontSize: 11, color: 'rgba(255,255,255,.22)', alignSelf: 'center', marginRight: 2 }}>Try:</span>
+            {IDEA_STARTERS.map(s => (
+              <button key={s} onClick={() => setIdea(s)}
+                style={{ background: 'rgba(255,255,255,.04)', border: `0.5px solid rgba(255,255,255,.1)`, borderRadius: 6, padding: '4px 10px', fontSize: 11, color: 'rgba(255,255,255,.45)', cursor: 'pointer', fontFamily: 'inherit', textAlign: 'left', lineHeight: 1.4 }}>
+                {s.length > 48 ? s.slice(0, 48) + '…' : s}
+              </button>
+            ))}
+          </div>
+        )}
         <div style={{ display: 'flex', gap: 10, marginTop: 10, flexWrap: 'wrap' }}>
           <button onClick={generate} disabled={loading || !idea.trim()} style={{ background: purple, color: '#fff', border: 'none', borderRadius: 8, padding: '10px 22px', fontSize: 14, fontWeight: 700, cursor: loading ? 'wait' : 'pointer', fontFamily: 'inherit', opacity: loading || !idea.trim() ? 0.6 : 1 }}>
-            {loading ? 'Generating…' : 'Generate distribution system'}
+            {loading ? 'Generating…' : 'Build campaign →'}
           </button>
           {loading && <button onClick={() => abortRef.current?.abort()} style={{ background: 'rgba(255,255,255,.06)', color: dim, border: `0.5px solid ${dimBorder}`, borderRadius: 8, padding: '10px 16px', fontSize: 13, cursor: 'pointer', fontFamily: 'inherit' }}>Stop</button>}
         </div>
@@ -246,19 +282,62 @@ export default function GeneratePage() {
           </div>
 
           {/* Tab content */}
-          {activeTab === 'Overview' && (
-            <div style={card()}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: purple, letterSpacing: '1px', marginBottom: 12 }}>CHANNEL MAP</div>
-              <p style={{ margin: 0, fontSize: 14, color: 'rgba(255,255,255,.7)', lineHeight: 1.7 }}>{parsed.channelMap}</p>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 10, marginTop: 20 }}>
+          {activeTab === 'Campaign' && (
+            <div>
+              {/* 20-day calendar */}
+              <div style={{ marginBottom: 20 }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: purple, letterSpacing: '1px', marginBottom: 14 }}>20-DAY CAMPAIGN CALENDAR</div>
+                {[0, 1, 2, 3].map(week => {
+                  const startDay = week * 5 + 1
+                  const days = [startDay, startDay + 1, startDay + 2, startDay + 3, startDay + 4].filter(d => d <= 20)
+                  return (
+                    <div key={week} style={{ marginBottom: 12 }}>
+                      <div style={{ fontSize: 10, fontWeight: 700, color: 'rgba(255,255,255,.2)', letterSpacing: '1.5px', marginBottom: 6 }}>WEEK {week + 1}</div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                        {days.map(day => {
+                          const idx = day - 1
+                          const tw = parsed.twitterHooks[idx]
+                          const li = parsed.linkedinHooks[idx]
+                          const bsky = day <= 5 ? parsed.bluesky[idx] : undefined
+                          const thr = day <= 5 ? parsed.threadsPost[idx] : undefined
+                          const tiktokIdx = TIKTOK_DAYS.indexOf(day)
+                          const tt = tiktokIdx >= 0 ? parsed.tiktokScripts[tiktokIdx]?.hook : undefined
+                          const hasContent = tw || li || bsky || thr || tt
+                          if (!hasContent) return null
+                          return (
+                            <div key={day} style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
+                              <div style={{ fontSize: 10, fontWeight: 700, color: 'rgba(255,255,255,.25)', minWidth: 34, paddingTop: 7, flexShrink: 0 }}>D{day}</div>
+                              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, flex: 1 }}>
+                                {tw && <CalendarChip icon="𝕏" color="#1D9BF0" text={tw} />}
+                                {li && <CalendarChip icon="in" color="#0A66C2" text={li} />}
+                                {bsky && <CalendarChip icon="🦋" color="#0085FF" text={bsky} />}
+                                {thr && <CalendarChip icon="◉" color="#888" text={thr} />}
+                                {tt && <CalendarChip icon="▶" color="#EE1D52" text={tt} />}
+                              </div>
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+              {/* Stats */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 8, marginBottom: 16 }}>
                 {[{ label: 'Twitter hooks', n: parsed.twitterHooks.length }, { label: 'LinkedIn hooks', n: parsed.linkedinHooks.length }, { label: 'TikTok scripts', n: parsed.tiktokScripts.length }, { label: 'Threads posts', n: parsed.threadsPost.length }, { label: 'Bluesky posts', n: parsed.bluesky.length }]
                   .map(({ label, n }) => (
-                    <div key={label} style={{ background: purpleFaint, border: `0.5px solid ${purpleBorder}`, borderRadius: 8, padding: '12px 14px' }}>
-                      <div style={{ fontSize: 24, fontWeight: 800, color: '#A78BFA' }}>{n}</div>
-                      <div style={{ fontSize: 11, color: dim, marginTop: 2 }}>{label}</div>
+                    <div key={label} style={{ background: purpleFaint, border: `0.5px solid ${purpleBorder}`, borderRadius: 8, padding: '10px 12px' }}>
+                      <div style={{ fontSize: 22, fontWeight: 800, color: '#A78BFA' }}>{n}</div>
+                      <div style={{ fontSize: 10, color: dim, marginTop: 2 }}>{label}</div>
                     </div>
                   ))}
               </div>
+              {parsed.channelMap && (
+                <div style={card()}>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: purple, letterSpacing: '1px', marginBottom: 10 }}>CHANNEL STRATEGY</div>
+                  <p style={{ margin: 0, fontSize: 13, color: 'rgba(255,255,255,.65)', lineHeight: 1.7 }}>{parsed.channelMap}</p>
+                </div>
+              )}
             </div>
           )}
 
