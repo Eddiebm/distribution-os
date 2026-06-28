@@ -20,7 +20,10 @@ export async function GET(req: NextRequest) {
 
   for (const key of keys) {
     const email = key.replace('dist:queue:', '')
-    const due = await r.zrange<string[]>(key, 0, now, { byScore: true })
+    if (!email.includes('@')) continue // skip non-email keys
+    let due: string[]
+    try { due = await r.zrange<string[]>(key, 0, now, { byScore: true }) }
+    catch { continue } // skip keys with wrong type
     if (!due.length) continue
 
     let posted = 0, emailed = 0
